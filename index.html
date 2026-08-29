@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ZIYI老师TOEFL每日单词打卡-词根词缀</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html { font-size:16px; }
+  body { font-family:-apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif; background:#eef1f6; color:#1c2434; }
+
+  /* ============ 学生端 ============ */
+  #studentApp { max-width:480px; margin:0 auto; min-height:100vh; background:#eef1f6; padding-bottom:32px; }
+  .s-header { background:linear-gradient(135deg,#3b6ef6,#5a8bff); color:#fff; padding:18px 20px 16px; border-radius:0 0 22px 22px; box-shadow:0 6px 18px rgba(59,110,246,.25); }
+  .s-header .row { display:flex; justify-content:space-between; align-items:center; }
+  .s-header h1 { font-size:19px; font-weight:700; letter-spacing:.5px; }
+  .s-header .sub { font-size:12px; opacity:.85; margin-top:3px; }
+  .chip { background:rgba(255,255,255,.18); padding:5px 12px; border-radius:20px; font-size:13px; font-weight:600; backdrop-filter:blur(4px); }
+  .s-body { padding:16px; }
+
+  .card { background:#fff; border-radius:16px; padding:16px; margin-bottom:14px; box-shadow:0 2px 10px rgba(28,36,52,.06); }
+  .stat-row { display:flex; gap:10px; margin-bottom:14px; }
+  .stat-box { flex:1; background:#fff; border-radius:14px; padding:12px 8px; text-align:center; box-shadow:0 2px 10px rgba(28,36,52,.06); }
+  .stat-box .num { font-size:20px; font-weight:800; color:#3b6ef6; }
+  .stat-box .lab { font-size:11px; color:#8a93a6; margin-top:2px; }
+
+  .task { border:1.5px solid #e8ecf5; border-radius:16px; padding:15px 16px; margin-bottom:12px; background:#fff; box-shadow:0 2px 10px rgba(28,36,52,.05); }
+  .task .t-head { display:flex; justify-content:space-between; align-items:center; }
+  .task .t-title { font-size:15px; font-weight:700; }
+  .task .t-tag { font-size:11px; padding:3px 10px; border-radius:12px; font-weight:600; }
+  .tag-done { background:#e8f7ee; color:#1e9e5a; }
+  .tag-go { background:#eef3ff; color:#3b6ef6; }
+  .tag-lock { background:#f1f3f8; color:#98a1b3; }
+  .task .t-desc { font-size:12px; color:#8a93a6; margin:6px 0 10px; }
+  .bar { height:8px; background:#eef1f6; border-radius:6px; overflow:hidden; }
+  .bar i { display:block; height:100%; background:linear-gradient(90deg,#3b6ef6,#5a8bff); border-radius:6px; transition:width .3s; }
+  .btn { display:block; width:100%; border:none; border-radius:13px; padding:13px; font-size:15px; font-weight:700; cursor:pointer; transition:transform .06s, opacity .2s; }
+  .btn:active { transform:scale(.98); }
+  .btn-primary { background:linear-gradient(135deg,#3b6ef6,#5a8bff); color:#fff; box-shadow:0 4px 12px rgba(59,110,246,.3); }
+  .btn-ghost { background:#eef3ff; color:#3b6ef6; }
+  .btn[disabled] { opacity:.45; cursor:not-allowed; box-shadow:none; }
+
+  /* 登录 */
+  #scr-login .logo { text-align:center; padding:52px 0 28px; }
+  #scr-login .logo .icon { font-size:52px; }
+  #scr-login .logo h2 { font-size:22px; margin-top:8px; font-weight:800; }
+  #scr-login .logo p { font-size:12.5px; color:#8a93a6; margin-top:5px; }
+  .field { margin-bottom:14px; }
+  .field label { display:block; font-size:12.5px; color:#5a6478; margin-bottom:6px; font-weight:600; }
+  .field input { width:100%; border:1.5px solid #e2e7f2; border-radius:12px; padding:12px 14px; font-size:15px; outline:none; transition:border .2s; background:#fff; }
+  .field input:focus { border-color:#3b6ef6; }
+  .err-tip { color:#e5484d; font-size:12px; margin-top:5px; min-height:16px; }
+  .login-note { text-align:center; font-size:11.5px; color:#a0a8ba; margin-top:14px; line-height:1.7; }
+
+  /* 学习卡片 */
+  .learn-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+  .learn-top .mode { font-size:12px; font-weight:700; color:#fff; background:linear-gradient(135deg,#f59e0b,#fbbf24); padding:4px 12px; border-radius:12px; }
+  .learn-top .mode.new { background:linear-gradient(135deg,#3b6ef6,#5a8bff); }
+  .learn-top .cnt { font-size:12.5px; color:#8a93a6; font-weight:600; }
+  .learn-top .vcfg { font-size:11.5px; color:#3b6ef6; background:#eef3ff; padding:4px 10px; border-radius:10px; font-weight:700; }
+  .wcard { background:#fff; border-radius:20px; padding:26px 22px 18px; box-shadow:0 4px 16px rgba(28,36,52,.08); text-align:center; }
+  .wcard .word { font-size:34px; font-weight:800; letter-spacing:.5px; cursor:pointer; line-height:1.2; }
+  .wcard .word:active { opacity:.7; }
+  .wcard .ipa { font-size:16px; color:#3b6ef6; margin-top:6px; cursor:pointer; }
+  .wcard .pos-zh { font-size:14.5px; margin-top:8px; color:#3a4560; line-height:1.5; }
+  .split { height:1px; background:#eef1f6; margin:16px 0; }
+  .affix-tag { display:inline-block; background:#fff7e8; color:#b45309; font-size:12px; padding:5px 12px; border-radius:10px; margin-bottom:10px; font-weight:600; }
+  .decomp { font-size:12.5px; color:#7c5a2a; background:#fffaef; border:1px dashed #f1dfa8; border-radius:10px; padding:8px 12px; line-height:1.6; }
+  .coll { font-size:12px; color:#8a93a6; margin-top:10px; line-height:1.6; }
+  .coll b { color:#5a6478; font-weight:700; }
+  .sent { font-size:15px; line-height:1.65; margin-top:10px; color:#26314d; }
+  .sent .spk { cursor:pointer; user-select:none; }
+  .sent-zh { font-size:12.5px; color:#8a93a6; margin-top:6px; display:none; }
+  .show-zh { background:none; border:none; color:#3b6ef6; font-size:12px; margin-top:8px; cursor:pointer; font-weight:600; }
+
+  .act-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:16px; }
+  .act { background:#fff; border-radius:14px; padding:13px 8px; text-align:center; cursor:pointer; border:1.5px solid #e8ecf5; font-size:13.5px; font-weight:700; color:#3a4560; transition:transform .06s; }
+  .act:active { transform:scale(.97); }
+  .act .em { font-size:19px; display:block; margin-bottom:3px; }
+  .act.rec-active { background:#fdecec; border-color:#f5b5b5; color:#d5303a; }
+  .btn-next { margin-top:10px; }
+  .pts-float { position:fixed; left:50%; top:38%; transform:translateX(-50%); background:rgba(28,36,52,.85); color:#ffd76a; font-weight:800; font-size:18px; padding:10px 22px; border-radius:30px; z-index:99; animation:floatUp 1.1s forwards; pointer-events:none; }
+  @keyframes floatUp { 0%{opacity:0; transform:translate(-50%,10px)} 20%{opacity:1} 100%{opacity:0; transform:translate(-50%,-46px)} }
+  .toast { position:fixed; left:50%; bottom:64px; transform:translateX(-50%); background:rgba(28,36,52,.9); color:#fff; font-size:13px; padding:10px 18px; border-radius:24px; z-index:99; animation:tin .25s; max-width:86%; text-align:center; }
+  @keyframes tin { from{opacity:0; transform:translate(-50%,8px)} to{opacity:1; transform:translate(-50%,0)} }
+
+  .my-rec { margin-top:12px; background:#f2f7ff; border-radius:12px; padding:10px 12px; font-size:12.5px; color:#3a4560; display:flex; align-items:center; gap:10px; }
+  .my-rec .play { color:#3b6ef6; font-weight:800; cursor:pointer; font-size:13px; }
+
+  /* 测试 */
+  .qcard { background:#fff; border-radius:18px; padding:22px 18px; box-shadow:0 4px 16px rgba(28,36,52,.08); }
+  .qcard .qw { text-align:center; font-size:30px; font-weight:800; margin:14px 0 4px; cursor:pointer; }
+  .qcard .qi { text-align:center; color:#3b6ef6; font-size:15px; margin-bottom:18px; cursor:pointer; }
+  .qcard .qhint { text-align:center; color:#8a93a6; font-size:12px; font-weight:700; }
+  .qcard .qw-zh { text-align:center; font-size:20px; font-weight:800; margin:14px 0 4px; color:#232a3a; line-height:1.45; }
+  .qcard .qsent { font-size:17px; color:#232a3a; line-height:1.6; margin:14px 2px 6px; font-weight:500; }
+  .qcard .qsent b { color:#3b6ef6; letter-spacing:1px; }
+  .qcard .qsent .spk { cursor:pointer; color:#3b6ef6; font-size:12.5px; font-weight:700; user-select:none; white-space:nowrap; }
+  .qcard .qhint2 { text-align:center; color:#a0a8ba; font-size:11px; margin-bottom:14px; }
+  .wg-title { font-size:13px; font-weight:800; color:#3b6ef6; margin:18px 0 8px; background:#eef3ff; padding:7px 12px; border-radius:10px; }
+  .gprow { display:flex; justify-content:space-between; align-items:center; gap:10px; padding:14px 12px; border:1.5px solid #e8ecf5; border-radius:14px; margin-bottom:10px; background:#fff; cursor:pointer; transition:all .15s; }
+  .gprow:active { transform:scale(.98); }
+  .gprow:hover { border-color:#3b6ef6; box-shadow:0 4px 14px rgba(59,110,246,.12); }
+  .gprow .gp-info { flex:1; min-width:0; }
+  .gprow .gp-t { font-size:15px; font-weight:800; color:#1c2434; }
+  .gprow .gp-sub { font-size:12px; color:#8a93a6; margin-top:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .gprow .gp-arrow { font-size:18px; color:#b6bfd2; font-weight:700; }
+  .gprow .gp-n { font-size:12px; font-weight:700; color:#3b6ef6; background:#eef3ff; padding:3px 10px; border-radius:14px; white-space:nowrap; }
+  .wrow { display:flex; align-items:baseline; gap:10px; padding:9px 4px; border-bottom:1px dashed #e8ecf5; flex-wrap:wrap; }
+  .wrow .w-word { font-size:16px; font-weight:800; color:#1c2434; cursor:pointer; }
+  .wrow .w-word:hover { color:#3b6ef6; }
+  .wrow .w-word .w-ipa { font-size:13px; color:#3b6ef6; margin-left:2px; }
+  .wrow .w-zh { font-size:13px; color:#3a4560; flex:1; min-width:140px; }
+  .wrow .w-affix { font-size:11px; color:#8a93a6; background:#f2f4f9; padding:2px 8px; border-radius:8px; white-space:nowrap; }
+  .opt { display:block; width:100%; text-align:left; background:#f6f8fc; border:2px solid transparent; border-radius:12px; padding:13px 16px; font-size:14.5px; margin-bottom:10px; cursor:pointer; color:#2a3450; font-weight:500; transition:all .15s; }
+  .opt:hover { border-color:#c9d6f8; }
+  .opt.right { background:#e8f7ee; border-color:#63c98f; color:#1e7a4a; font-weight:700; }
+  .opt.wrong { background:#fdecec; border-color:#f0a3a8; color:#c03040; }
+  #q-explain { background:#fff; border-radius:14px; overflow:hidden; }
+  .qexplain-inner { background:linear-gradient(135deg,#fef9f0,#fff5f5); border:1.5px solid #f5d5a0; border-radius:14px; padding:16px; text-align:center; }
+  .qexplain-correct { font-size:14px; color:#1e7a4a; font-weight:700; margin-bottom:10px; }
+  .qexplain-word { font-size:18px; font-weight:800; color:#2a3450; margin-bottom:4px; }
+  .qexplain-zh { font-size:13.5px; color:#64748b; margin-bottom:8px; }
+  .qexplain-sent { font-size:12.5px; color:#8a93a6; margin-bottom:12px; line-height:1.5; }
+  .qexplain-btn { margin-top:4px; font-size:14px; }
+  .q-top { display:flex; justify-content:space-between; font-size:12.5px; color:#8a93a6; font-weight:600; }
+
+  .result-hero { text-align:center; padding:10px 0 4px; }
+  .result-hero .big { font-size:44px; font-weight:800; color:#3b6ef6; }
+  .result-hero .lab { font-size:13px; color:#8a93a6; margin-top:4px; }
+  .result-hero .verdict { font-size:18px; font-weight:800; margin-top:10px; }
+  .wrong-list { margin-top:14px; }
+  .wrong-list .wl-title { font-size:13px; font-weight:700; color:#c03040; margin-bottom:8px; }
+  .wrong-item { display:flex; justify-content:space-between; font-size:13px; padding:7px 0; border-bottom:1px dashed #e8ecf5; }
+
+  details.demo-tools { background:#fff; border-radius:14px; padding:12px 16px; margin-top:16px; box-shadow:0 2px 10px rgba(28,36,52,.05); }
+  details.demo-tools summary { font-size:12.5px; color:#8a93a6; font-weight:700; cursor:pointer; }
+  .demo-tools .dg { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+  .demo-tools button { flex:1; min-width:110px; border:none; background:#eef1f6; color:#5a6478; border-radius:10px; padding:9px 6px; font-size:12px; cursor:pointer; font-weight:600; }
+  .demo-tools button:hover { background:#e2e7f2; }
+  .demo-note { font-size:11px; color:#a0a8ba; margin-top:8px; line-height:1.6; }
+
+  .teacher-link { text-align:center; margin-top:20px; }
+  .teacher-link a { color:#a0a8ba; font-size:12px; cursor:pointer; text-decoration:none; border-bottom:1px dashed #c5ccd9; }
+
+  /* ============ 教师后台 ============ */
+  #teacherView { display:none; background:#0b1220; color:#e2e8f0; min-height:100vh; padding:22px 26px 40px; }
+  #teacherView .t-wrap { max-width:1180px; margin:0 auto; }
+  .t-title-row { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
+  .t-title-row h2 { font-size:19px; color:#fff; font-weight:800; }
+  .t-title-row .sub { font-size:12px; color:#64748b; margin-top:3px; }
+  .t-actions { display:flex; gap:8px; }
+  .t-actions button { background:#1e293b; border:1px solid #334155; color:#cbd5e1; padding:8px 16px; border-radius:9px; font-size:12.5px; cursor:pointer; font-weight:600; }
+  .t-actions button:hover { background:#26334a; }
+  .demo-banner { background:linear-gradient(90deg,#3b2f0e,#4a3a12); border:1px solid #b45309; color:#fbbf24; font-size:12.5px; padding:10px 16px; border-radius:10px; margin:14px 0; line-height:1.6; }
+  .kcards { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin:16px 0; }
+  .kcard { background:#111a2e; border:1px solid #1e293b; border-radius:14px; padding:16px 18px; }
+  .kcard .k-lab { font-size:12px; color:#64748b; }
+  .kcard .k-val { font-size:26px; font-weight:800; color:#fff; margin-top:5px; }
+  .kcard .k-sub { font-size:11px; color:#475569; margin-top:4px; }
+  .kcard.hi .k-val { color:#38bdf8; }
+  .t-grid { display:grid; grid-template-columns:1.2fr .9fr; gap:16px; }
+  @media (max-width:900px){ .t-grid{ grid-template-columns:1fr; } }
+  .panel { background:#111a2e; border:1px solid #1e293b; border-radius:14px; padding:18px; margin-bottom:16px; }
+  .panel h3 { font-size:14.5px; color:#fff; font-weight:700; margin-bottom:4px; }
+  .panel .p-sub { font-size:11.5px; color:#64748b; margin-bottom:14px; line-height:1.6; }
+  table.tt { width:100%; border-collapse:collapse; font-size:12.5px; }
+  table.tt th { text-align:left; color:#64748b; font-weight:600; padding:7px 8px; border-bottom:1px solid #1e293b; font-size:11.5px; }
+  table.tt td { padding:9px 8px; border-bottom:1px solid #16203a; color:#cbd5e1; }
+  table.tt tr:last-child td { border-bottom:none; }
+  .rk { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:7px; background:#1e293b; color:#94a3b8; font-size:11px; font-weight:800; }
+  .rk.r1 { background:#7c2d12; color:#fdba74; } .rk.r2 { background:#1e3a5f; color:#7dd3fc; } .rk.r3 { background:#14532d; color:#86efac; }
+  .nm { color:#e2e8f0; font-weight:600; } .nm small { display:block; color:#475569; font-size:10.5px; font-weight:400; }
+  .pt { color:#fbbf24; font-weight:700; }
+  .weak-row { display:flex; justify-content:space-between; align-items:center; padding:9px 8px; border-bottom:1px solid #16203a; }
+  .weak-row:last-child { border-bottom:none; }
+  .weak-words { font-size:13px; color:#7dd3fc; font-weight:600; }
+  .weak-theme { font-size:11px; color:#94a3b8; margin-top:2px; }
+  .weak-badge { background:#7f1d1d; color:#fca5a5; font-size:11px; padding:3px 9px; border-radius:9px; font-weight:700; white-space:nowrap; }
+  .rec-row { padding:7px 8px; border-bottom:1px dashed #16203a; display:flex; justify-content:space-between; align-items:center; font-size:12px; color:#94a3b8; }
+  .rec-row .rp { color:#38bdf8; cursor:pointer; font-weight:700; }
+  .empty-tip { color:#475569; font-size:12px; padding:14px 8px; text-align:center; }
+  .pwd-gate { max-width:360px; margin:12vh auto 0; background:#111a2e; border:1px solid #1e293b; border-radius:16px; padding:28px; text-align:center; }
+  .pwd-gate h2 { color:#fff; font-size:17px; margin-bottom:6px; }
+  .pwd-gate p { color:#64748b; font-size:12px; margin-bottom:18px; }
+  .pwd-gate input { width:100%; background:#0b1220; border:1px solid #334155; color:#fff; border-radius:10px; padding:11px 14px; font-size:15px; outline:none; text-align:center; }
+  .pwd-gate input:focus { border-color:#38bdf8; }
+  .pwd-gate .err { color:#f87171; font-size:12px; margin-top:10px; min-height:16px; }
+  .pwd-gate button { width:100%; margin-top:14px; background:linear-gradient(135deg,#2563eb,#38bdf8); border:none; color:#fff; padding:12px; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; }
+  .back-link { text-align:center; margin-top:18px; }
+  .back-link a { color:#64748b; font-size:12px; cursor:pointer; text-decoration:underline; }
+</style>
+</head>
+<body>
+
+<!-- ================= 学生端 ================= -->
+<div id="studentApp">
+  <div class="s-header">
+    <div class="row">
+      <div>
+        <h1 style="font-size:16.5px">ZIYI老师TOEFL每日单词打卡-词根词缀</h1>
+        <div class="sub" id="hdr-date">—</div>
+        <div class="sub" id="hdr-sub">词根词缀 · 科学记忆</div>
+      </div>
+      <div class="chip" id="hdr-chip">⭐ 0</div>
+    </div>
+  </div>
+  <div class="s-body">
+
+    <!-- 登录 -->
+    <div id="scr-login" style="display:none">
+      <div class="logo">
+        <div class="icon">📚</div>
+        <h2 style="font-size:20px">ZIYI老师TOEFL每日单词打卡-词根词缀</h2>
+        <p id="login-date" style="color:#3b6ef6;font-weight:700">—</p>
+        <p>每天 20 词 · 第 3 / 7 天智能复习 · 20 题闯关测试</p>
+      </div>
+      <div class="card">
+        <div class="field">
+          <label>学号（10 位数字）</label>
+          <input id="in-id" inputmode="numeric" maxlength="10" placeholder="例如 2026010101">
+        </div>
+        <div class="field">
+          <label>姓名</label>
+          <input id="in-name" maxlength="12" placeholder="例如 李小明">
+        </div>
+        <div class="err-tip" id="login-err"></div>
+        <button class="btn btn-primary" id="btn-login">登 录</button>
+        <div class="login-note">首次登录自动注册 · 学习记录保存在本机<br>词库为词根词缀拓展词（60 词 / 3 天）</div>
+      </div>
+      <div class="teacher-link"><a onclick="openTeacher()">教师后台入口 →</a></div>
+    </div>
+
+    <!-- 首页 -->
+    <div id="scr-home" style="display:none">
+      <div class="stat-row">
+        <div class="stat-box"><div class="num" id="st-day">1</div><div class="lab">打卡天数</div></div>
+        <div class="stat-box"><div class="num" id="st-streak">1</div><div class="lab">连续打卡</div></div>
+        <div class="stat-box"><div class="num" id="st-master">0</div><div class="lab">累计积分</div></div>
+      </div>
+      <div class="card" id="greet-card" style="padding:14px 16px;">
+        <b id="greet-name"></b>，<span id="greet-txt">开始今天的学习吧！</span>
+        <div style="font-size:11.5px;color:#a0a8ba;margin-top:4px;">掌握度 <b id="greet-master" style="color:#3b6ef6">0%</b>（已学 <span id="greet-learned">0</span> / 60 词）</div>
+      </div>
+      <div id="task-list"></div>
+      <button class="btn btn-primary" id="btn-main-go" onclick="goNextTask()">开始今日任务</button>
+      <button class="btn btn-ghost" style="margin-top:10px;" onclick="openWords()">📖 查看已学词组（<span id="words-entry-n">0</span> 词）</button>
+      <button class="btn btn-ghost" style="margin-top:6px;" onclick="openWrongWords()">❌ 查看历史错词（<span id="wrong-entry-n">0</span> 词）</button>
+      <details class="demo-tools">
+        <summary>⚙ 演示工具（仅演示版可见）</summary>
+        <div class="dg">
+          <button onclick="simTo(3)">模拟跳到第 3 天<br>（体验复习）</button>
+          <button onclick="simTo(7)">模拟跳到第 7 天<br>（体验复习）</button>
+          <button onclick="resetMe()">重置我的进度</button>
+        </div>
+        <div class="demo-note">真实版本按日期自动推进；演示版可一键模拟到第 3 / 7 天，体验自动随机复习 20 词的完整流程。</div>
+      </details>
+      <div class="teacher-link"><a onclick="openTeacher()">教师后台 →</a>　<a onclick="logout()" style="margin-left:14px;">退出登录</a></div>
+    </div>
+
+    <!-- 学习 -->
+    <div id="scr-learn" style="display:none">
+      <div class="learn-top">
+        <span class="mode new" id="learn-mode">新词学习</span>
+        <span class="vcfg" id="vcfg">🔊 真人语音</span>
+        <span class="cnt" id="learn-cnt">1 / 20</span>
+      </div>
+      <div class="wcard" id="wcard"></div>
+      <button class="btn btn-primary btn-next" id="btn-word-next">我记住了，下一词 +10分</button>
+      <button class="btn btn-ghost" style="margin-top:10px;" onclick="backHome()">返回首页</button>
+    </div>
+
+    <!-- 已学单词 -->
+    <div id="scr-words" style="display:none">
+      <div class="learn-top">
+        <span class="mode new">已学词组</span>
+        <span class="cnt" id="words-cnt">0 组 · 0 词</span>
+      </div>
+      <div class="card" style="padding:6px 14px 14px;">
+        <div id="words-list"></div>
+      </div>
+      <button class="btn btn-ghost" style="margin-top:12px;display:none" id="words-back" onclick="backWordGroups()">← 返回词组列表</button>
+      <button class="btn btn-ghost" style="margin-top:12px;" onclick="backHome()">返回首页</button>
+    </div>
+
+    <!-- 历史错词 -->
+    <div id="scr-wrong" style="display:none">
+      <div class="learn-top">
+        <span class="mode new" style="background:#fde8e8;color:#c03040;">历史错词</span>
+        <span class="cnt" id="wrong-cnt">0 词</span>
+      </div>
+      <div class="card" style="padding:6px 14px 14px;">
+        <div id="wrong-list-hist"></div>
+      </div>
+      <button class="btn btn-ghost" style="margin-top:12px;" onclick="backHome()">返回首页</button>
+    </div>
+
+    <!-- 测试 -->
+    <div id="scr-quiz" style="display:none">
+      <div class="q-top"><span id="q-prog">第 1 / 20 题</span><span id="q-score">得分 0</span></div>
+      <div class="qcard" id="qcard"></div>
+      <div id="q-explain" style="display:none;margin-top:12px;"></div>
+      <button class="btn btn-ghost" style="margin-top:12px;" onclick="backHome()">退出测试</button>
+    </div>
+
+    <!-- 结果 -->
+    <div id="scr-result" style="display:none">
+      <div class="card">
+        <div class="result-hero">
+          <div class="verdict" id="r-verdict">🎉 闯关成功！</div>
+          <div class="big" id="r-score">80%</div>
+          <div class="lab" id="r-detail">答对 8 / 10</div>
+        </div>
+        <div class="wrong-list" id="r-wrong"></div>
+        <button class="btn btn-primary" id="r-next-group" style="margin-top:16px;display:none" onclick="nextGroup()">📖 继续学习下一组</button>
+        <button class="btn btn-primary" style="margin-top:16px;" onclick="backHome()">返回首页</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= 教师后台 ================= -->
+<div id="teacherView">
+  <div id="pwd-gate" class="pwd-gate" style="display:none">
+    <h2>教师后台登录</h2>
+    <p>演示版密码：123456</p>
+    <input id="in-pwd" type="password" placeholder="请输入教师密码">
+    <div class="err" id="pwd-err"></div>
+    <button onclick="tryTeacherLogin()">进入后台</button>
+    <div class="back-link"><a onclick="closeTeacher()">← 返回学生端</a></div>
+  </div>
+  <div id="t-main" class="t-wrap" style="display:none">
+    <div class="t-title-row">
+      <div>
+        <h2>ZIYI老师TOEFL每日单词打卡 · 教师后台</h2>
+        <div class="sub" id="t-date-sub"></div>
+      </div>
+      <div class="t-actions">
+        <button onclick="simTo(3);renderTeacher()">模拟至第3天</button>
+        <button onclick="simTo(7);renderTeacher()">模拟至第7天</button>
+        <button onclick="clearSim();renderTeacher()">清除模拟</button>
+        <button onclick="wipeAll()">清空演示数据</button>
+        <button onclick="closeTeacher()">返回学生端</button>
+      </div>
+    </div>
+    <div class="demo-banner">⚙ 当前为<b>网页演示版</b>：数据保存在本机浏览器，含 2 名模拟学生（供后台展示）。正式版将部署到云端，全班实时同步。</div>
+    <div class="kcards" id="kcards"></div>
+    <div class="t-grid">
+      <div>
+        <div class="panel">
+          <h3>学生排行榜</h3>
+          <div class="p-sub">按累计积分排序 · 正确率取最近一次闯关测试 · 掌握度 = 已学词数 / 60</div>
+          <table class="tt" id="tb-rank"><thead><tr><th>排名</th><th>学生</th><th>积分</th><th>正确率</th><th>掌握度</th><th>连续</th></tr></thead><tbody></tbody></table>
+        </div>
+        <div class="panel">
+          <h3>今日完成情况</h3>
+          <div class="p-sub">完成率 = 今日已完成任务的学生 / 今日有打卡的学生</div>
+          <table class="tt" id="tb-today"></table>
+        </div>
+      </div>
+      <div>
+        <div class="panel">
+          <h3>薄弱词清单</h3>
+          <div class="p-sub">根据学生闯关测试的错题自动汇总 · 按词根词缀系列归组，便于课堂针对性讲解</div>
+          <div id="weak-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script>
+/* ================= 基础数据层 ================= */
+const LS_KEY = 'toefl_demo_v1';
+const TEACHER_PWD = '123456';
+const WMAP = {}; WORDS.forEach(w => WMAP[w.id] = w);
+function today() { return new Date().toISOString().slice(0,10); }
+const APP_TITLE = 'ZIYI老师TOEFL每日单词打卡-词根词缀';
+function dateStr() { const d = new Date(); const wk = '日一二三四五六'[d.getDay()]; return `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日 · 星期${wk}`; }
+function dayDiff(a, b) { return Math.round((new Date(b) - new Date(a)) / 86400000); }
+function fmtDT(ts) { const d = new Date(ts); return `${d.getMonth()+1}月${d.getDate()}日 ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; }
+function rnd(seed) { let x = seed; return () => { x = (x * 9301 + 49297) % 233280; return x / 233280; }; }
+
+let DB = null;
+function loadDB() {
+  try { DB = JSON.parse(localStorage.getItem(LS_KEY) || 'null'); } catch(e) { DB = null; }
+  if (!DB || !DB.students) { DB = { students:{}, simDay:null }; seedDemo(); saveDB(); }
+}
+function saveDB() { localStorage.setItem(LS_KEY, JSON.stringify(DB)); syncToServer(); }
+
+/* ====== 学生数据同步到服务端（教师后台可看） ====== */
+let _syncTimer = null;
+function syncToServer() {
+  // 防抖：500ms 内多次 saveDB 只发一次
+  if (_syncTimer) clearTimeout(_syncTimer);
+  _syncTimer = setTimeout(_doSync, 500);
+}
+async function _doSync() {
+  if (!ME) return;
+  try {
+    // 精简数据：去掉大字段（recordings 音频等），只上传教师需要看的字段
+    const slim = {
+      id: ME.id, name: ME.name, points: ME.points,
+      learned: ME.learned, newDone: ME.newDone, reviewDone: ME.reviewDone,
+      quiz: ME.quiz, daily: ME.daily, actDates: ME.actDates,
+      created: ME.created, groupOffset: ME.groupOffset || 0
+    };
+    const r = await fetch('/api/student-sync', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: ME.id, name: ME.name, data: slim }),
+      signal: AbortSignal.timeout(15000)
+    });
+    if (!r.ok) {
+      // 服务端可能冷启动中，延迟重试一次
+      await new Promise(r => setTimeout(r, 5000));
+      try {
+        const r2 = await fetch('/api/student-sync', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: ME.id, name: ME.name, data: slim }),
+          signal: AbortSignal.timeout(15000)
+        });
+        if (!r2.ok) console.warn('sync retry failed', r2.status);
+      } catch (e2) { console.warn('sync retry error', e2); }
+    }
+  } catch (e) { /* 静默失败，不影响本地功能 */ }
+}
+
+/* 首次打开：预置 2 名模拟学生（演示数据） */
+function seedDemo() {
+  const mk = (id, name, days, day2Done) => {
+    const created = new Date(Date.now() - 3*86400000).toISOString();
+    const st = { id, name, created, points:0, learned:[], newDone:{}, reviewDone:{}, quiz:[], recordings:{}, recCount:0, daily:{}, actDates:[], simulated:true };
+    for (let d = 1; d <= days; d++) {
+      const ws = WORDS.filter(w => w.day === d);
+      st.newDone[d] = ws.map(w => w.id);
+      st.learned.push(...ws.map(w => w.id));
+      const rand = rnd(Number(id) + d * 7);
+      const correct = 12 + Math.floor(rand() * 7); // 20 题制
+      const wrong = ws.map(w => w.id).filter((_, i) => i >= correct && i < correct + 4);
+      st.quiz.push({ day:d, correct, total:20, wrong });
+      st.points += ws.length * 10;
+      const dt = new Date(Date.now() - (3 - d) * 86400000).toISOString().slice(0,10);
+      st.daily[dt] = { words: ws.length, points: ws.length * 10 };
+      st.actDates.push(dt);
+    }
+    if (!day2Done && days >= 2) { /* 王芳：第2天只学一半 */ }
+    return st;
+  };
+  DB.students['2026010101'] = mk('2026010101', '李明（演示）', 2, true);
+  const wf = mk('2026010202', '王芳（演示）', 2, true);
+  // 王芳第2天进行到一半
+  const d2 = wf.newDone[2].slice(0, 10);
+  const removed = wf.newDone[2].slice(10);
+  wf.newDone[2] = d2;
+  wf.learned = wf.learned.filter(id => !removed.includes(id));
+  wf.points -= removed.length * 10;
+  const t = today(); wf.daily[t] = { words: 10, points: 100 };
+  if (!wf.actDates.includes(t)) wf.actDates.push(t);
+  DB.students['2026010202'] = wf;
+}
+
+/* ================= 学生会话 ================= */
+let ME = null, SESSION = null;
+function getSession() { return localStorage.getItem('toefl_session'); }
+function setSession(id) { localStorage.setItem('toefl_session', id); }
+
+/* 组号 = 基于天数的基础组 + 当日多学的组数（groupOffset）。正常每天 1 组；学完一组闯关后可选择继续下一组 */
+function effDay(st) { return Math.min((DB.simDay || dayDiff(st.created.slice(0,10), today()) + 1) + (st.groupOffset || 0), 999); }
+
+function studentTask(st) {
+  const d = effDay(st);
+  const newWords = d <= 3 ? WORDS.filter(w => w.day === d) : [];
+  const doneNew = (st.newDone[d] || []).slice();
+  const needReview = REVIEW_DAYS.includes(d);
+  const learnedPool = st.learned.map(id => WMAP[id]).filter(w => w && w.day !== d);
+  let reviewWords = [];
+  if (needReview) {
+    if (st.reviewSeed && st.reviewSeed[d] && st.reviewSeed[d].length) {
+      reviewWords = st.reviewSeed[d].map(id => WMAP[id]).filter(Boolean);
+    } else {
+      const rand = rnd(Number(st.id) + d * 13);
+      const pool = learnedPool.slice();
+      for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i+1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+      reviewWords = pool.slice(0, Math.min(20, pool.length));
+      st.reviewSeed = st.reviewSeed || {}; st.reviewSeed[d] = reviewWords.map(w => w.id);
+      try { saveDB(); } catch(e) {}
+    }
+  }
+  const newDoneFlag = newWords.length === 0 || doneNew.length >= newWords.length;
+  const reviewDoneFlag = !needReview || (st.reviewDone[d] || []).length >= reviewWords.length;
+  const quizDone = st.quiz.some(q => q.day === d);
+  return { d, newWords, doneNew, needReview, reviewWords, doneReview: (st.reviewDone[d] || []).slice(), newDoneFlag, reviewDoneFlag, quizDone,
+           allDone: newDoneFlag && reviewDoneFlag && quizDone };
+}
+
+/* ================= 屏幕切换 ================= */
+const SCR = ['scr-login','scr-home','scr-learn','scr-quiz','scr-result','scr-words','scr-wrong'];
+function show(scr) { SCR.forEach(s => document.getElementById(s).style.display = (s === scr ? 'block' : 'none')); }
+
+function initApp() {
+  document.title = APP_TITLE + ' · ' + dateStr();
+  document.getElementById('hdr-date').textContent = '📅 ' + dateStr();
+  document.getElementById('login-date').textContent = '📅 ' + dateStr();
+  updateVoiceBtn();
+  probeServer(); // 探测语音服务（不阻塞界面）
+  loadDB();
+  const sid = getSession();
+  if (sid && DB.students[sid]) { ME = DB.students[sid]; show('scr-home'); renderHome(); }
+  else show('scr-login');
+}
+
+/* 登录 */
+document.getElementById('btn-login').onclick = () => {
+  const id = document.getElementById('in-id').value.trim();
+  const name = document.getElementById('in-name').value.trim();
+  const err = document.getElementById('login-err');
+  err.textContent = '';
+  if (!/^\d{10}$/.test(id)) { err.textContent = '学号必须为 10 位数字'; return; }
+  if (!name) { err.textContent = '请输入姓名'; return; }
+  if (DB.students[id] && DB.students[id].name !== name) { err.textContent = '该学号已绑定其他姓名，请核对'; return; }
+  if (!DB.students[id]) {
+    DB.students[id] = { id, name, created:new Date().toISOString(), points:0, learned:[], newDone:{}, reviewDone:{}, reviewSeed:{}, quiz:[], recordings:{}, recCount:0, daily:{}, actDates:[] };
+  }
+  ME = DB.students[id]; setSession(id);
+  markActive(); saveDB();
+  show('scr-home'); renderHome();
+};
+document.getElementById('in-pwd').addEventListener('keydown', e => { if (e.key === 'Enter') tryTeacherLogin(); });
+
+function logout() { localStorage.removeItem('toefl_session'); ME = null; initApp(); }
+
+function markActive() {
+  if (!ME) return;
+  const t = today();
+  if (!ME.actDates.includes(t)) ME.actDates.push(t);
+  ME.lastActive = Date.now();
+}
+
+function streak(st) {
+  const set = new Set(st.actDates);
+  let n = 0, d = new Date();
+  if (!set.has(today())) d = new Date(d.getTime() - 86400000); // 今天未活跃则从昨天倒推
+  while (set.has(d.toISOString().slice(0,10))) { n++; d = new Date(d.getTime() - 86400000); }
+  return n;
+}
+
+/* ================= 首页 ================= */
+function renderHome() {
+  document.getElementById('hdr-chip').textContent = '⭐ ' + (ME ? ME.points : 0);
+  if (!ME) return;
+  const t = studentTask(ME);
+  document.getElementById('st-day').textContent = ME.actDates.length;
+  document.getElementById('st-streak').textContent = streak(ME);
+  document.getElementById('st-master').textContent = ME.points;
+  document.getElementById('greet-name').textContent = ME.name;
+  document.getElementById('greet-master').textContent = Math.round(ME.learned.length / TOTAL_WORDS * 100) + '%';
+  document.getElementById('greet-learned').textContent = ME.learned.length;
+  document.getElementById('words-entry-n').textContent = ME.learned.length;
+  document.getElementById('wrong-entry-n').textContent = getAllWrongWords().length;
+  document.getElementById('hdr-sub').textContent = '第 ' + t.d + ' 组 · ' + (DB.simDay ? '演示模拟模式' : '正常打卡');
+
+  let html = '';
+  // 新词任务
+  if (t.newWords.length) {
+    const p = Math.round(t.doneNew.length / t.newWords.length * 100);
+    html += `<div class="task"><div class="t-head"><div class="t-title">📖 第 ${t.d} 组新词（20 词）</div><span class="t-tag ${t.newDoneFlag?'tag-done':'tag-go'}">${t.newDoneFlag?'已完成':'进行中 '+p+'%'}</span></div>
+      <div class="t-desc">词根词缀分组：${groupLabel(t.newWords)} · 学完每词 +10 分</div><div class="bar"><i style="width:${p}%"></i></div></div>`;
+  } else {
+    html += `<div class="task"><div class="t-head"><div class="t-title">📖 本组新词</div><span class="t-tag tag-done">演示词库已学完</span></div><div class="t-desc">演示版仅含 3 组新词（60 词），可以复习巩固为主。</div></div>`;
+  }
+  // 复习任务
+  if (t.needReview) {
+    const p = t.reviewWords.length ? Math.round(t.doneReview.length / t.reviewWords.length * 100) : 100;
+    html += `<div class="task"><div class="t-head"><div class="t-title">🔁 复习巩固（随机 ${t.reviewWords.length} 词）</div><span class="t-tag ${t.reviewDoneFlag?'tag-done':'tag-go'}">${t.reviewDoneFlag?'已完成':'待完成'}</span></div>
+      <div class="t-desc">从已学 ${ME.learned.length} 词中随机抽取 · 第 3 / 7 组学完自动安排</div><div class="bar"><i style="width:${p}%"></i></div></div>`;
+  }
+  // 闯关测试
+  const quizReady = t.newDoneFlag && t.reviewDoneFlag;
+  const qz = ME.quiz.find(q => q.day === t.d);
+  html += `<div class="task"><div class="t-head"><div class="t-title">🏆 闯关测试（第 ${t.d} 组）</div><span class="t-tag ${qz?'tag-done':(quizReady?'tag-go':'tag-lock')}">${qz?'已完成 '+Math.round(qz.correct/qz.total*100)+'%':(quizReady?'可挑战':'未解锁')}</span></div>
+    <div class="t-desc">20 题：中译英 5 · 英译中 5 · 句子填空 10（可朗读句子）</div></div>`;
+  document.getElementById('task-list').innerHTML = html;
+  const btn = document.getElementById('btn-main-go');
+  const nx = nextGroupInfo();
+  if (qz && nx) { btn.textContent = '📖 继续学习下一组（第 ' + nx + ' 组）'; btn.disabled = false; }
+  else if (qz) { btn.textContent = '✅ 今日任务全部完成'; btn.disabled = true; }
+  else if (!t.newDoneFlag) { btn.textContent = t.doneNew.length ? '继续学习新词（' + (t.newWords.length - t.doneNew.length) + ' 词剩余）' : '开始学习新词'; btn.disabled = false; }
+  else if (t.needReview && !t.reviewDoneFlag) { btn.textContent = '开始复习（' + t.reviewWords.length + ' 词）'; btn.disabled = false; }
+  else { btn.textContent = '开始闯关测试 🏆'; btn.disabled = false; }
+}
+
+function groupLabel(words) {
+  const set = [...new Set(words.map(w => w.affix))];
+  return set.length <= 3 ? set.join('、') : set.slice(0,3).join('、') + ' 等';
+}
+
+/* 学习入口 */
+function goNextTask() {
+  const t = studentTask(ME);
+  if (!t.newDoneFlag) startLearn('new');
+  else if (t.needReview && !t.reviewDoneFlag) startLearn('review');
+  else if (!t.quizDone) startQuiz();
+  else nextGroup();
+}
+/* 下一组：本组学习+闯关完成后，可选择继续学下一组（同一天可学多组） */
+function nextGroupInfo() {
+  const t = studentTask(ME);
+  if (!t.quizDone) return null;
+  const nd = t.d + 1;
+  const ws = WORDS.filter(w => w.day === nd);
+  if (!ws.length || (ME.newDone[nd] || []).length >= ws.length) return null;
+  return nd;
+}
+function nextGroup() {
+  const nd = nextGroupInfo();
+  if (!nd) { toast('已是最后一组，演示版没有更多新词了'); return; }
+  ME.groupOffset = (ME.groupOffset || 0) + (nd - effDay(ME));
+  markActive(); saveDB();
+  startLearn('new');
+  toast('开始第 ' + nd + ' 组学习 📖');
+}
+/* 查看已学词组：第一级=词组列表，第二级=组内单词 */
+let WORDS_GROUP = null; // null=词组列表；数字=正在查看的组号
+function openWords() { WORDS_GROUP = null; show('scr-words'); renderWords(); }
+function escWord(w) { return w.replace(/'/g, "\\'"); }
+function learnedGroups() {
+  if (!ME) return {};
+  const groups = {};
+  ME.learned.map(id => WMAP[id]).filter(Boolean).forEach(w => { (groups[w.day] = groups[w.day] || []).push(w); });
+  return groups;
+}
+function renderWords() {
+  if (!ME) return;
+  const groups = learnedGroups();
+  const days = Object.keys(groups).map(Number).sort((a, b) => a - b);
+  const total = Object.values(groups).reduce((s, a) => s + a.length, 0);
+  const backBtn = document.getElementById('words-back');
+  const cnt = document.getElementById('words-cnt');
+  const list = document.getElementById('words-list');
+
+  if (WORDS_GROUP === null || !groups[WORDS_GROUP]) {
+    // 第一级：词组列表
+    WORDS_GROUP = null;
+    backBtn.style.display = 'none';
+    cnt.textContent = days.length + ' 组 · ' + total + ' 词';
+    if (!days.length) {
+      list.innerHTML = '<div style="text-align:center;color:#a0a8ba;font-size:13px;padding:24px 0">还没有学过词组，先去学习吧</div>';
+      return;
+    }
+    list.innerHTML = days.map(d => {
+      const ws = groups[d];
+      return `<div class="gprow" onclick="openWordGroup(${d})">
+        <div class="gp-info">
+          <div class="gp-t">第 ${d} 组</div>
+          <div class="gp-sub">词根词缀：${groupLabel(ws)}</div>
+        </div>
+        <span class="gp-n">${ws.length} 词</span>
+        <span class="gp-arrow">›</span>
+      </div>`;
+    }).join('');
+    return;
+  }
+
+  // 第二级：组内单词
+  const ws = groups[WORDS_GROUP];
+  backBtn.style.display = '';
+  cnt.textContent = '第 ' + WORDS_GROUP + ' 组 · ' + ws.length + ' 词';
+  let html = `<div class="wg-title">第 ${WORDS_GROUP} 组 · ${groupLabel(ws)}</div>`;
+  html += ws.map(w => `<div class="wrow">
+    <span class="w-word" onclick="speak('${escWord(w.word)}')">${w.word}<span class="w-ipa">🔊</span></span>
+    <span class="w-zh">${w.pos ? w.pos + ' ' : ''}${w.zh}</span>
+    <span class="w-affix">${w.affix}｜${w.affixMeaning || ''}</span></div>`).join('');
+  list.innerHTML = html;
+}
+function openWordGroup(d) { WORDS_GROUP = d; renderWords(); }
+function backWordGroups() { WORDS_GROUP = null; renderWords(); }
+function backHome() { stopSpeak(); show('scr-home'); renderHome(); }
+
+/* 查看历史错词 */
+function openWrongWords() { show('scr-wrong'); renderWrongWords(); }
+function getAllWrongWords() {
+  if (!ME) return [];
+  const wrongSet = new Set();
+  (ME.quiz || []).forEach(q => (q.wrong || []).forEach(id => wrongSet.add(id)));
+  return [...wrongSet].map(id => WMAP[id]).filter(Boolean);
+}
+function renderWrongWords() {
+  if (!ME) return;
+  const wrongs = getAllWrongWords();
+  document.getElementById('wrong-cnt').textContent = wrongs.length + ' 词';
+  const el = document.getElementById('wrong-list-hist');
+  if (!wrongs.length) {
+    el.innerHTML = '<div style="text-align:center;color:#1e9e5a;font-size:13px;font-weight:700;padding:24px 0">暂无错词，继续保持！</div>';
+    return;
+  }
+  // 按组归组
+  const groups = {};
+  wrongs.forEach(w => { (groups[w.day] = groups[w.day] || []).push(w); });
+  let html = '';
+  Object.keys(groups).map(Number).sort((a,b) => b - a).forEach(d => {
+    const ws = groups[d];
+    html += `<div class="wg-title">第 ${d} 组 · ${ws.length} 个错词</div>`;
+    html += ws.map(w => `<div class="wrow">
+      <span class="w-word" onclick="speak('${w.word.replace(/'/g,"\\'")}')">${w.word}<span class="w-ipa">🔊</span></span>
+      <span class="w-zh">${w.pos ? w.pos + ' ' : ''}${w.zh}</span>
+      <span class="w-affix">${w.affix}｜${w.affixMeaning || ''}</span></div>`).join('');
+  });
+  el.innerHTML = html;
+}
+
+/* ================= TTS 朗读：服务端真人神经语音（edge-tts） ================= */
+let enVoice = null, CUR_AUDIO = null;
+let SERVER_OK = null; // null=未探测 true/false
+const TTS_FETCH = [];
+function pickVoice() { // 仅作服务器不可用时的兜底
+  const vs = (speechSynthesis.getVoices() || []).filter(v => /^en/i.test(v.lang));
+  enVoice = vs.find(v => /natural|neural|online/i.test(v.name || '')) || vs[0] || null;
+}
+if (window.speechSynthesis) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+async function probeServer() {
+  // 带重试的服务器探测（适配云端冷启动：Render 免费版休眠后需约30秒唤醒）
+  for (let i = 0; i < 3; i++) {
+    try {
+      const r = await fetch('/api/ping', { cache: 'no-store', signal: AbortSignal.timeout(15000) });
+      if (r.ok) {
+        SERVER_OK = true;
+        try {
+          const j = await r.json();
+          if (j && j.hosts && j.hosts.length && location.hostname === 'localhost') {
+            const tip = document.getElementById('phone-tip');
+            if (tip) { tip.style.display = ''; tip.innerHTML = '📱 手机与电脑连同一 WiFi，用此地址访问：<br>' + j.hosts.map(h => '<b>' + h + '</b>').join('<br>'); }
+          }
+        } catch (e) {}
+        break;
+      }
+    } catch (e) {
+      if (i === 0 && !window._wakingToastShown) {
+        window._wakingToastShown = true;
+        toast('服务器唤醒中，请稍候...');
+      }
+      if (i < 2) await new Promise(r => setTimeout(r, 5000));
+    }
+  }
+  if (SERVER_OK === null) SERVER_OK = false;
+  updateVoiceBtn();
+  return SERVER_OK;
+}
+function stopAudio() { if (CUR_AUDIO) { try { CUR_AUDIO.pause(); } catch(e) {} CUR_AUDIO = null; } }
+function stopSpeak() { try { speechSynthesis.cancel(); } catch(e) {} stopAudio(); }
+let AUDIO_MAP = null;  // 静态音频映射
+async function loadAudioMap() {
+  if (AUDIO_MAP) return AUDIO_MAP;
+  try {
+    const r = await fetch('audio/map.json', { cache: 'force-cache' });
+    if (r.ok) { AUDIO_MAP = await r.json(); return AUDIO_MAP; }
+  } catch (e) {}
+  AUDIO_MAP = {};  // 加载失败则空映射
+  return AUDIO_MAP;
+}
+function audioKey(text, rate) {
+  // rate < 1 表示慢速例句
+  if (rate && rate < 1) return text + '|slow';
+  // 判断是单词还是例句：单词通常较短且无空格后跟大写（例句特征）
+  const isWord = text.indexOf(' ') < 0 || text.length < 25;
+  if (isWord) return text;
+  return text + '|normal';
+}
+async function speak(text, rate) {
+  stopSpeak();
+  // 优先级：1. 静态预生成音频 → 2. 服务端 TTS → 3. 本机合成音
+  await loadAudioMap();
+  const key = audioKey(text, rate);
+  const staticFile = AUDIO_MAP[key];
+  if (staticFile) {
+    try {
+      const a = new Audio('audio/' + staticFile);
+      stopAudio(); CUR_AUDIO = a;
+      a.onended = () => { if (CUR_AUDIO === a) CUR_AUDIO = null; };
+      await a.play();
+      return;
+    } catch (e) { /* 静态音频播放失败，继续降级 */ }
+  }
+  if (SERVER_OK === null) await probeServer();
+  if (SERVER_OK) {
+    try {
+      const slow = (rate && rate < 1) ? -12 : 0;
+      const url = '/api/tts?text=' + encodeURIComponent(text) + '&rate=' + slow;
+      const r = await fetch(url, { cache: 'force-cache' });
+      if (r.ok) {
+        const blob = await r.blob();
+        const u = URL.createObjectURL(blob);
+        const a = new Audio(u);
+        stopAudio(); CUR_AUDIO = a;
+        a.onended = () => { try { URL.revokeObjectURL(u); } catch(e) {} if (CUR_AUDIO === a) CUR_AUDIO = null; };
+        a.play().catch(() => {});
+        return;
+      }
+    } catch (e) {}
+  }
+  if (!window._ttsFallbackWarned) {
+    window._ttsFallbackWarned = true;
+    toast('语音使用设备合成音');
+  }
+  speakLocal(text, rate);
+}
+function speakLocal(text, rate) {
+  if (!window.speechSynthesis) { toast('语音服务不可用'); return; }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US'; u.rate = rate || 0.95; if (enVoice) u.voice = enVoice;
+  speechSynthesis.speak(u);
+}
+function updateVoiceBtn() {
+  const el = document.getElementById('vcfg');
+  if (!el) return;
+  el.textContent = '🔊 真人语音';
+  el.title = '微软神经真人语音（预生成）';
+}
+
+/* ================= 学习流程 ================= */
+let L = { mode:'new', list:[], idx:0 };
+function startLearn(mode) {
+  const t = studentTask(ME);
+  if (mode === 'new') {
+    L.list = t.newWords.filter(w => !t.doneNew.includes(w.id));
+    if (!L.list.length) L.list = t.newWords;
+  } else {
+    L.list = t.reviewWords.filter(w => !t.doneReview.includes(w.id));
+    if (!L.list.length) L.list = t.reviewWords;
+  }
+  L.mode = mode; L.idx = 0;
+  show('scr-learn'); renderCard();
+}
+
+function renderCard() {
+  const w = L.list[L.idx]; if (!w) return finishLearn();
+  document.getElementById('learn-mode').textContent = L.mode === 'new' ? '第 ' + effDay(ME) + ' 组 · 新词学习' : '复习巩固 · 随机重排';
+  document.getElementById('learn-mode').className = 'mode' + (L.mode === 'new' ? ' new' : '');
+  document.getElementById('learn-cnt').textContent = (L.idx + 1) + ' / ' + L.list.length;
+  document.getElementById('wcard').innerHTML = `
+    <div class="affix-tag">${w.affix}｜${w.affixMeaning}</div>
+    <div class="word" onclick="speak('${w.word.replace(/'/g,"\\'")}')">${w.word}</div>
+    <div class="ipa" onclick="speak('${w.word.replace(/'/g,"\\'")}')">🔊 ${w.ipa}</div>
+    <div class="pos-zh">${w.pos ? w.pos + ' ' : ''}${w.zh}</div>
+    <div class="split"></div>
+    <div class="decomp">🧩 ${w.decomp}</div>
+    <div class="coll"><b>常用搭配</b>　${w.coll}${w.cefr ? '　<span style="color:#c9d0dd;background:#eef1f6;padding:1px 7px;border-radius:8px;font-size:10.5px">' + w.cefr + '</span>' : ''}</div>
+    <div class="split"></div>
+    <div class="sent"><span class="spk" onclick="speak('${w.sent.replace(/'/g,"\\'")}', .92)">🔊</span> ${w.sent}</div>
+    <div class="sent-zh" id="sent-zh">${w.sentZh}</div>
+    <button class="show-zh" id="btn-zh" onclick="toggleZh()">显示中文翻译</button>
+    <div class="act-grid">
+      <div class="act" onclick="speak('${w.word.replace(/'/g,"\\'")}')"><span class="em">🔊</span>朗读单词</div>
+      <div class="act" onclick="speak('${w.sent.replace(/'/g,"\\'")}', .92)"><span class="em">🐢</span>慢速听例句</div>
+    </div>`;
+  updateNextBtn();
+}
+function toggleZh() {
+  const el = document.getElementById('sent-zh'), b = document.getElementById('btn-zh');
+  if (el.style.display === 'block') { el.style.display = 'none'; b.textContent = '显示中文翻译'; }
+  else { el.style.display = 'block'; b.textContent = '隐藏中文翻译'; }
+}
+function updateNextBtn() {
+  const w = L.list[L.idx]; if (!w) return;
+  const done = taskDoneIds().includes(w.id);
+  document.getElementById('btn-word-next').textContent = (L.idx === L.list.length - 1 ? '完成本组学习 🎉' : '我记住了，下一词') + (done ? '' : ' +10分');
+}
+function taskDoneIds() {
+  const d = effDay(ME);
+  return L.mode === 'new' ? (ME.newDone[d] || []) : (ME.reviewDone[d] || []);
+}
+document.getElementById('btn-word-next').onclick = () => {
+  const w = L.list[L.idx];
+  const d = effDay(ME);
+  const doneList = L.mode === 'new' ? (ME.newDone[d] = ME.newDone[d] || []) : (ME.reviewDone[d] = ME.reviewDone[d] || []);
+  if (!doneList.includes(w.id)) {
+    doneList.push(w.id);
+    if (!ME.learned.includes(w.id)) ME.learned.push(w.id);
+    addPoints(10);
+    const t = today(); ME.daily[t] = ME.daily[t] || { words:0, points:0 }; ME.daily[t].words++;
+  }
+  markActive(); saveDB();
+  L.idx++;
+  if (L.idx >= L.list.length) finishLearn(); else renderCard();
+};
+function finishLearn() {
+  const d = effDay(ME), t = studentTask(ME);
+  if (t.newDoneFlag) { ME.doneDays = ME.doneDays || {}; ME.doneDays[d] = true; }
+  markActive(); saveDB();
+  const canQuiz = t.newDoneFlag && t.reviewDoneFlag;
+  if (canQuiz) { toast('本组学习完成！闯关测试已解锁 🏆'); show('scr-home'); renderHome(); }
+  else { show('scr-home'); renderHome(); toast('本组学习完成！'); }
+}
+function addPoints(n) {
+  ME.points += n;
+  const t = today(); ME.daily[t] = ME.daily[t] || { words:0, points:0 }; ME.daily[t].points += n;
+  document.getElementById('hdr-chip').textContent = '⭐ ' + ME.points;
+  const f = document.createElement('div'); f.className = 'pts-float'; f.textContent = '+' + n + ' 分';
+  document.body.appendChild(f); setTimeout(() => f.remove(), 1200);
+}
+function toast(msg) {
+  document.querySelectorAll('.toast').forEach(e => e.remove());
+  const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
+  document.body.appendChild(t); setTimeout(() => t.remove(), 2600);
+}
+
+/* ================= 闯关测试：中译英 5 + 英译中 5 + 句子填空 10 ================= */
+let Q = { qs:[], idx:0, score:0, wrong:[], cur:null };
+function escQ(s) { return String(s).replace(/'/g, "\\'"); }
+function startQuiz() {
+  const t = studentTask(ME);
+  let pool = t.newWords.length ? t.newWords.slice() : (t.reviewWords.length ? t.reviewWords.slice() : ME.learned.map(id => WMAP[id]).filter(Boolean));
+  if (pool.length < 4) { toast('词量不足，无法出题'); return; }
+  const rand = rnd(Date.now() % 100000);
+  for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i+1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+  const n = Math.min(20, pool.length);
+  const chosen = pool.slice(0, n);
+  // 题型配额：中译英 5、英译中 5、句子填空 10（词量不足时优先保证句子填空）
+  const nC2E = Math.min(5, Math.max(1, Math.round(n * 5 / 20)));
+  const nE2C = Math.min(5, Math.max(1, Math.round(n * 5 / 20)));
+  const qs = chosen.map((w, i) => makeQ(w, i < nC2E ? 'c2e' : (i < nC2E + nE2C ? 'e2c' : 's2w')));
+  // 题序打乱，三种题型穿插出现
+  for (let i = qs.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i+1)); [qs[i], qs[j]] = [qs[j], qs[i]]; }
+  Q.qs = qs; Q.idx = 0; Q.score = 0; Q.wrong = [];
+  show('scr-quiz'); renderQ();
+}
+function makeQ(w, type) {
+  // 每题全新随机种子：正确答案位置与干扰项均无固定规律
+  const rand2 = rnd((Date.now() % 100000) * 7 + Math.floor(Math.random() * 99999) + w.word.length * 13);
+  const isWordOpts = type !== 'e2c';              // 中译英/句子填空 → 选项是英文单词；英译中 → 选项是中文释义
+  const ans = isWordOpts ? w.word : w.zh;
+  const sameDay = WORDS.filter(x => x.id !== w.id && x.day === w.day);
+  const distractPool = (sameDay.length >= 6 ? sameDay : WORDS.filter(x => x.id !== w.id)).slice();
+  const opts = [ans];
+  while (opts.length < 4) {
+    const src = distractPool.length && rand2() > .3
+      ? distractPool.splice(Math.floor(rand2() * distractPool.length), 1)[0]
+      : WORDS[Math.floor(rand2() * WORDS.length)];
+    if (!src || src.id === w.id) continue;
+    const cand = isWordOpts ? src.word : src.zh;
+    if (cand && cand !== ans && !opts.includes(cand)) opts.push(cand);
+  }
+  for (let i = opts.length - 1; i > 0; i--) { const j = Math.floor(rand2() * (i+1)); [opts[i], opts[j]] = [opts[j], opts[i]]; }
+  return { w, type, opts, ans };
+}
+/* 句子挖空：把目标词（含常见词形变化）替换为 ____ */
+function blankSentence(w) {
+  const SPECIAL = /[.*+?^${}()|[\]\\-]/g;
+  for (let k = 0; k <= 3; k++) {
+    const stem = w.word.slice(0, w.word.length - k);
+    if (stem.length < 3) break;
+    const re = new RegExp('\\b(' + stem.replace(SPECIAL, '\\$&') + '[a-z]{0,5})\\b', 'i');
+    const m = w.sent.match(re);
+    if (m) return w.sent.replace(m[0], '____');
+  }
+  return w.sent;
+}
+function renderQ() {
+  if (Q.idx >= Q.qs.length) return endQuiz();
+  const q = Q.qs[Q.idx];
+  document.getElementById('q-prog').textContent = `第 ${Q.idx + 1} / ${Q.qs.length} 题`;
+  document.getElementById('q-score').textContent = `答对 ${Q.score}`;
+  let head = '';
+  if (q.type === 'e2c') {
+    head = `<div class="qhint">🎧 英译中：选出正确的中文释义</div>
+      <div class="qw" onclick="speak('${escQ(q.w.word)}')">${q.w.word}</div>
+      <div class="qi" onclick="speak('${escQ(q.w.word)}')">🔊 ${q.w.ipa}</div>`;
+  } else if (q.type === 'c2e') {
+    head = `<div class="qhint">🇨🇳 中译英：选出正确的英文单词</div>
+      <div class="qw-zh">${q.w.zh}</div>
+      <div class="qi">${q.w.pos || ''}</div>`;
+  } else {
+    head = `<div class="qhint">✏️ 句子填空：选择合适的单词填入空格</div>
+      <div class="qsent">${blankSentence(q.w)} <span class="spk" onclick="speak('${escQ(q.w.sent)}', .92)">🔊 朗读句子</span></div>
+      <div class="qhint2">点「朗读句子」可听完整例句（真人语音），边听边选</div>`;
+  }
+  document.getElementById('qcard').innerHTML = head +
+    q.opts.map((o, i) => `<button class="opt" onclick="answer(${i}, this)" data-ok="${o === q.ans}"><b style="color:#3b6ef6;margin-right:8px">${'ABCD'[i]}</b>${o}</button>`).join('');
+  Q.cur = q;
+}
+function answer(i, btn) {
+  const q = Q.cur;
+  const ok = q.opts[i] === q.ans;
+  document.querySelectorAll('#qcard .opt').forEach(b => { b.style.pointerEvents = 'none'; if (b.dataset.ok === 'true') b.classList.add('right'); });
+  if (ok) {
+    Q.score++;
+    setTimeout(() => { Q.idx++; renderQ(); }, 550);
+  } else {
+    btn.classList.add('wrong');
+    Q.wrong.push(q.w.id);
+    // 显示正确答案解析 + 已明白按钮，停留等待学生确认
+    const box = document.getElementById('q-explain');
+    box.style.display = '';
+    box.innerHTML = `<div class="qexplain-inner">
+      <div class="qexplain-correct">✅ 正确答案：<b>${q.ans}</b></div>
+      <div class="qexplain-word">${q.w.word} ${q.w.ipa || ''} <span style="color:#3b6ef6;cursor:pointer" onclick="speak('${escQ(q.w.word)}')">🔊</span></div>
+      <div class="qexplain-zh">${q.w.pos ? q.w.pos + ' ' : ''}${q.w.zh}</div>
+      ${q.type === 's2w' ? '<div class="qexplain-sent">' + q.w.sent + ' <span style="color:#3b6ef6;cursor:pointer" onclick="speak(\'' + escQ(q.w.sent) + '\', .92)">🔊</span></div>' : ''}
+      <button class="btn btn-primary qexplain-btn" onclick="ackWrong()">已明白，继续下一题</button>
+    </div>`;
+  }
+}
+function ackWrong() {
+  document.getElementById('q-explain').style.display = 'none';
+  Q.idx++;
+  renderQ();
+}
+function endQuiz() {
+  const d = effDay(ME);
+  ME.quiz = ME.quiz.filter(q => q.day !== d);
+  ME.quiz.push({ day:d, correct:Q.score, total:Q.qs.length, wrong:Q.wrong });
+  markActive(); saveDB();
+  const pct = Math.round(Q.score / Q.qs.length * 100);
+  document.getElementById('r-verdict').textContent = pct >= 60 ? '🎉 闯关成功！' : '💪 再接再厉';
+  document.getElementById('r-score').textContent = pct + '%';
+  document.getElementById('r-detail').textContent = `答对 ${Q.score} / ${Q.qs.length} · 正确率 ${pct}%`;
+  const wl = document.getElementById('r-wrong');
+  if (Q.wrong.length) {
+    wl.innerHTML = '<div class="wl-title">本次答错的单词（已计入教师后台薄弱词）</div>' +
+      Q.wrong.map(id => { const w = WMAP[id]; return `<div class="wrong-item"><span><b>${w.word}</b>　<span style="color:#8a93a6">${w.zh}</span></span><span style="color:#3b6ef6;cursor:pointer" onclick="speak('${w.word.replace(/'/g,"\\'")}')">🔊</span></div>`; }).join('');
+  } else wl.innerHTML = '<div style="text-align:center;color:#1e9e5a;font-size:13px;font-weight:700;padding:10px 0">全部答对，太棒了！</div>';
+  // 本组闯关完成 → 提供继续下一组入口
+  const rNext = document.getElementById('r-next-group');
+  const nx = nextGroupInfo();
+  if (nx) { rNext.style.display = 'inline-block'; rNext.textContent = '📖 继续学习下一组（第 ' + nx + ' 组）'; }
+  else rNext.style.display = 'none';
+  show('scr-result'); renderHome();
+}
+
+/* ================= 演示模拟 ================= */
+function simTo(day) {
+  loadDB();
+  DB.simDay = day;
+  Object.values(DB.students).forEach(st => {
+    for (let d = 1; d < day; d++) {
+      if ((st.newDone[d] || []).length && st.quiz.some(q => q.day === d)) continue; // 已有真实/模拟数据
+      const ws = WORDS.filter(w => w.day === d);
+      if (!ws.length || (st.newDone[d] || []).length) {
+        if (!st.quiz.some(q => q.day === d)) {
+          const rand = rnd(Number(st.id) + d * 31);
+          const correct = 12 + Math.floor(rand() * 7);
+          st.quiz.push({ day:d, correct, total:20, wrong: ws.map(w => w.id).filter((_, i) => i >= correct && i < correct + 4) });
+        }
+        continue;
+      }
+      st.newDone[d] = ws.map(w => w.id);
+      ws.forEach(w => { if (!st.learned.includes(w.id)) st.learned.push(w.id); });
+      st.points += ws.length * 10;
+      const rand = rnd(Number(st.id) + d * 17);
+      const correct = 12 + Math.floor(rand() * 7);
+      st.quiz.push({ day:d, correct, total:20, wrong: ws.map(w => w.id).filter((_, i) => i >= correct && i < correct + 4) });
+      const dt = new Date(Date.now() - (day - d) * 86400000).toISOString().slice(0,10);
+      st.daily[dt] = { words: ws.length, points: ws.length * 10 };
+      if (!st.actDates.includes(dt)) st.actDates.push(dt);
+    }
+    st.reviewSeed = {};
+  });
+  saveDB();
+  if (ME) { ME = DB.students[ME.id] || ME; renderHome(); }
+  toast('已模拟到第 ' + day + ' 天（体验随机复习）');
+}
+function clearSim() { DB.simDay = null; Object.values(DB.students).forEach(st => st.reviewSeed = {}); saveDB(); if (ME) renderHome(); toast('已恢复真实日期进度'); }
+function resetMe() {
+  if (!ME) return;
+  DB.students[ME.id] = { id:ME.id, name:ME.name, created:new Date().toISOString(), points:0, learned:[], newDone:{}, reviewDone:{}, reviewSeed:{}, quiz:[], recordings:{}, recCount:0, daily:{}, actDates:[] };
+  ME = DB.students[ME.id]; saveDB(); renderHome(); toast('已重置进度');
+}
+
+/* ================= 教师后台 ================= */
+function openTeacher() { document.getElementById('studentApp').style.display = 'none'; document.getElementById('teacherView').style.display = 'block';
+  if (sessionStorage.getItem('t_ok') === '1') { document.getElementById('pwd-gate').style.display = 'none'; document.getElementById('t-main').style.display = 'block'; renderTeacher(); }
+  else { document.getElementById('pwd-gate').style.display = 'block'; document.getElementById('t-main').style.display = 'none'; }
+}
+function closeTeacher() { document.getElementById('teacherView').style.display = 'none'; document.getElementById('studentApp').style.display = 'block'; if (ME) renderHome(); }
+function tryTeacherLogin() {
+  const v = document.getElementById('in-pwd').value;
+  if (v === TEACHER_PWD) {
+    sessionStorage.setItem('t_ok', '1');
+    document.getElementById('pwd-gate').style.display = 'none';
+    document.getElementById('t-main').style.display = 'block';
+    document.getElementById('pwd-err').textContent = '';
+    renderTeacher();
+  } else document.getElementById('pwd-err').textContent = '密码不正确';
+}
+function wipeAll() {
+  if (!confirm('确认清空本机演示数据（服务端真实学生数据不受影响）？')) return;
+  localStorage.removeItem(LS_KEY); sessionStorage.clear();
+  DB = null; loadDB(); ME = null; localStorage.removeItem('toefl_session');
+  renderTeacher(); toast('本机演示数据已重置');
+}
+
+function renderTeacher() {
+  fetchServerStudents().then(() => renderTeacherNow());
+}
+let SERVER_STUDENTS = [];
+async function fetchServerStudents() {
+  for (let i = 0; i < 3; i++) {
+    try {
+      const r = await fetch('/api/students', { cache: 'no-store', signal: AbortSignal.timeout(15000) });
+      if (r.ok) {
+        const j = await r.json();
+        SERVER_STUDENTS = j.students || [];
+        return;
+      }
+    } catch (e) {
+      if (i < 2) await new Promise(r => setTimeout(r, 3000));
+    }
+  }
+  SERVER_STUDENTS = [];
+}
+function renderTeacherNow() {
+  loadDB();
+  // 合并数据：服务端真实数据优先，本地模拟数据补充
+  const localStudents = Object.values(DB.students);
+  const serverSids = new Set(SERVER_STUDENTS.map(s => s.sid));
+  const allStudents = [
+    ...SERVER_STUDENTS.map(s => {
+      // 服务端数据转成前端格式
+      const d = s.data || {};
+      return {
+        id: s.sid, name: s.name, points: d.points || 0,
+        learned: d.learned || [], newDone: d.newDone || {}, reviewDone: d.reviewDone || {},
+        quiz: d.quiz || [], daily: d.daily || {}, actDates: d.actDates || [],
+        created: d.created, simulated: false, lastActive: s.updatedAt ? s.updatedAt * 1000 : null,
+        _fromServer: true
+      };
+    }),
+    ...localStudents.filter(s => !serverSids.has(s.id))  // 本地模拟学生（服务端没有的）
+  ];
+  const t = today();
+  const d = DB.simDay || 3;
+  document.getElementById('t-date-sub').textContent = `今日：${t} · 班级进度：第 ${d} 天${DB.simDay ? '（模拟）' : ''} · 词库 ${TOTAL_WORDS} 词`;
+
+  const activeToday = allStudents.filter(st => (st.daily[t] && st.daily[t].words > 0) || (st.actDates || []).includes(t));
+  const doneToday = allStudents.filter(st => { const tk = studentTask(st); return tk.newDoneFlag && tk.reviewDoneFlag; });
+  const rates = allStudents.map(st => { const q = st.quiz.slice(-1)[0]; return q ? q.correct / q.total : null; }).filter(x => x != null);
+  const avgRate = rates.length ? Math.round(rates.reduce((a,b) => a+b, 0) / rates.length * 100) : 0;
+  const totalPts = allStudents.reduce((a, st) => a + st.points, 0);
+  const realCount = allStudents.filter(s => s._fromServer).length;
+
+  document.getElementById('kcards').innerHTML = `
+    <div class="kcard"><div class="k-lab">参与学生</div><div class="k-val">${allStudents.length}</div><div class="k-sub">真实学生 ${realCount} 人${allStudents.length - realCount > 0 ? ' · 模拟 ' + (allStudents.length - realCount) + ' 人' : ''}</div></div>
+    <div class="kcard hi"><div class="k-lab">任务完成率</div><div class="k-val">${activeToday.length ? Math.round(doneToday.length / activeToday.length * 100) : 0}%</div><div class="k-sub">${doneToday.length} / ${activeToday.length} 人完成</div></div>
+    <div class="kcard hi"><div class="k-lab">平均正确率</div><div class="k-val">${avgRate}%</div><div class="k-sub">按最近一次闯关测试</div></div>
+    <div class="kcard"><div class="k-lab">累计积分</div><div class="k-val">${totalPts}</div><div class="k-sub">学习 +10 / 词</div></div>`;
+
+  // 排行榜
+  const ranked = allStudents.slice().sort((a, b) => b.points - a.points);
+  document.querySelector('#tb-rank tbody').innerHTML = ranked.map((st, i) => {
+    const q = st.quiz.slice(-1)[0];
+    return `<tr><td><span class="rk r${i+1}">${i+1}</span></td>
+      <td class="nm">${st.name}<small>学号 ${st.id}${st.simulated ? ' · 模拟' : (st._fromServer ? '' : '')}</small></td>
+      <td class="pt">${st.points}</td>
+      <td>${q ? Math.round(q.correct / q.total * 100) + '%' : '—'}</td>
+      <td>${Math.round(st.learned.length / TOTAL_WORDS * 100)}%</td>
+      <td>${streak(st)} 天</td></tr>`;
+  }).join('') || '<tr><td colspan="6" class="empty-tip">暂无学生</td></tr>';
+
+  // 薄弱词
+  const wrongCount = {};
+  allStudents.forEach(st => st.quiz.forEach(q => (q.wrong || []).forEach(id => wrongCount[id] = (wrongCount[id] || 0) + 1)));
+  const weakIds = Object.keys(wrongCount).sort((a, b) => wrongCount[b] - wrongCount[a]).slice(0, 8);
+  const weakEl = document.getElementById('weak-list');
+  if (!weakIds.length) weakEl.innerHTML = '<div class="empty-tip">暂无错题记录，学生完成闯关测试后自动汇总</div>';
+  else weakEl.innerHTML = weakIds.map(id => {
+    const w = WMAP[id]; if (!w) return '';
+    return `<div class="weak-row"><div><div class="weak-words">${w.word} <span style="color:#64748b;font-weight:400;font-size:11px">${w.zh.split('；')[0]}</span></div>
+      <div class="weak-theme">${w.affix}（${w.series}）词义辨析</div></div><span class="weak-badge">出错 ${wrongCount[id]} 次</span></div>`;
+  }).join('');
+
+  // 今日完成
+  const tb = document.getElementById('tb-today');
+  if (!activeToday.length) tb.innerHTML = '<div class="empty-tip">今日暂无学生打卡</div>';
+  else tb.innerHTML = `<table class="tt"><thead><tr><th>学生</th><th>今日</th><th>积分</th><th>正确率</th><th>掌握度</th></tr></thead><tbody>` +
+    allStudents.filter(st => (st.daily[t] && st.daily[t].words > 0) || (st.actDates || []).includes(t)).map(st => {
+      const dt = st.daily[t], q = st.quiz.slice(-1)[0];
+      const last = st.lastActive ? fmtDT(st.lastActive) : '—';
+      const todayTxt = dt && dt.words ? `学 ${dt.words} 词 / +${dt.points} 分` : (st.actDates || []).includes(t) ? '已打卡' : '未打卡';
+      return `<tr><td class="nm">${st.name}</td><td>${todayTxt}<small style="display:block;color:#475569">最近 ${last}</small></td>
+        <td class="pt">${st.points}</td><td>${q ? Math.round(q.correct / q.total * 100) + '%' : '—'}</td>
+        <td>${Math.round(st.learned.length / TOTAL_WORDS * 100)}%</td></tr>`;
+    }).join('') + '</tbody></table>';
+}
+
+initApp();
+</script>
+</body>
+</html>

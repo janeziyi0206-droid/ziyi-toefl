@@ -226,7 +226,7 @@
         </div>
         <div class="err-tip" id="login-err"></div>
         <button class="btn btn-primary" id="btn-login">登 录</button>
-        <div class="login-note">首次登录自动注册 · 学习记录保存在本机<br>词库为词根词缀拓展词（60 词 / 3 天）</div>
+        <div class="login-note">仅限本班学生使用（学号+姓名验证）· 首次登录自动注册<br>词库为词根词缀拓展词（60 词 / 3 天）</div>
       </div>
       <div class="teacher-link"><a onclick="openTeacher()">教师后台入口 →</a></div>
     </div>
@@ -324,7 +324,7 @@
 <div id="teacherView">
   <div id="pwd-gate" class="pwd-gate" style="display:none">
     <h2>教师后台登录</h2>
-    <p>演示版密码：123456</p>
+    <p style="font-size:12px;color:#8a93a6">仅限任课教师使用</p>
     <input id="in-pwd" type="password" placeholder="请输入教师密码">
     <div class="err" id="pwd-err"></div>
     <button onclick="tryTeacherLogin()">进入后台</button>
@@ -367,6 +367,14 @@
         </div>
       </div>
     </div>
+
+    <!-- 背诵情况查询 -->
+    <div class="panel" style="margin-top:16px;">
+      <h3>📋 学生背诵情况查询</h3>
+      <div class="p-sub">选择学生，查看每日背诵明细：学新词 / 复习 / 闯关成绩 / 错词</div>
+      <select id="rec-sel" onchange="renderRecDetail()" style="width:100%;max-width:340px;border:1.5px solid #e2e7f2;border-radius:10px;padding:10px 12px;font-size:14px;margin-bottom:12px;background:#fff;"></select>
+      <div id="rec-detail"></div>
+    </div>
   </div>
 </div>
 
@@ -374,7 +382,55 @@
 <script>
 /* ================= 基础数据层 ================= */
 const LS_KEY = 'toefl_demo_v1';
-const TEACHER_PWD = '123456';
+const TEACHER_PWD = '52909019';
+/* 班级名单：学号 → 姓名（登录校验，名单外无法注册） */
+const STUDENT_ROSTER = {
+  '1234567890': '张三',
+  '0267650030': '陈欣易',
+  '0267650235': '方语彤',
+  '0267650624': '苗天一',
+  '0267650234': '许哲铭',
+  '0267650533': '王圆多',
+  '0267655104': '徐毅然',
+  '0267650743': '陈诺',
+  '0267650319': '周子洋',
+  '0267650549': '林弋丁',
+  '0267650162': '安泓睿',
+  '0267650712': '曾子轩',
+  '0267650719': '陈科润',
+  '0267650289': '陈肖翔',
+  '0267650051': '仇嘉铭',
+  '0267650588': '高銘宏',
+  '0267650391': '姜海坤',
+  '0267650061': '蒋贞贞',
+  '0267650723': '李贝君',
+  '0267650046': '林普',
+  '0267650654': '刘梦妍',
+  '0267650631': '刘禹成',
+  '0267650357': '鲁宽',
+  '0267650707': '莫易纬',
+  '0267650734': '芮子宣',
+  '0267650443': '苏诗涵',
+  '0267650393': '王紫瑶',
+  '0267650380': '吴承铠',
+  '0267650383': '杨璐嘉',
+  '0267650625': '杨笑镕',
+  '0267650370': '张羽萌',
+  '0267650008': '周嘉馨',
+  '0267650043': '丁冠翔',
+  '0267650096': '陈奕逍',
+  '0267650610': '林俊辰',
+  '0267650395': '马佩瑶',
+  '0267655328': '乔之雨',
+  '0267650240': '索浩然',
+  '0267650287': '王云可',
+  '0267650397': '吴远航',
+  '0267650412': '夏靖汐',
+  '0267650676': '杨欣怡',
+  '0267650033': '俞泽成',
+  '0267650485': '张琪振',
+  '0267650208': '张清栋'
+};
 const WMAP = {}; WORDS.forEach(w => WMAP[w.id] = w);
 function today() { return new Date().toISOString().slice(0,10); }
 const APP_TITLE = 'ZIYI老师TOEFL每日单词打卡-词根词缀';
@@ -521,6 +577,8 @@ document.getElementById('btn-login').onclick = () => {
   err.textContent = '';
   if (!/^\d{10}$/.test(id)) { err.textContent = '学号必须为 10 位数字'; return; }
   if (!name) { err.textContent = '请输入姓名'; return; }
+  if (!STUDENT_ROSTER[id]) { err.textContent = '该学号不在班级名单中，请核对或联系 ZIYI 老师'; return; }
+  if (STUDENT_ROSTER[id] !== name) { err.textContent = '学号与姓名不匹配，请核对后重试'; return; }
   if (DB.students[id] && DB.students[id].name !== name) { err.textContent = '该学号已绑定其他姓名，请核对'; return; }
   if (!DB.students[id]) {
     DB.students[id] = { id, name, created:new Date().toISOString(), points:0, learned:[], newDone:{}, reviewDone:{}, reviewSeed:{}, quiz:[], recordings:{}, recCount:0, daily:{}, actDates:[] };
@@ -1097,6 +1155,7 @@ function renderTeacher() {
   fetchServerStudents().then(() => renderTeacherNow());
 }
 let SERVER_STUDENTS = [];
+let allStudentsCache = [];
 async function fetchServerStudents() {
   for (let i = 0; i < 3; i++) {
     try {
@@ -1112,6 +1171,78 @@ async function fetchServerStudents() {
   }
   SERVER_STUDENTS = [];
 }
+/* ====== 背诵情况查询 ====== */
+function renderRecDetail() {
+  const sel = document.getElementById('rec-sel');
+  const box = document.getElementById('rec-detail');
+  const st = allStudentsCache.find(s => s.id === sel.value);
+  if (!st) { box.innerHTML = '<div class="empty-tip">暂无学生数据</div>'; return; }
+
+  // 汇总
+  const quizList = st.quiz || [];
+  const quizAvg = quizList.length ? Math.round(quizList.reduce((a,q)=>a+q.correct/q.total,0)/quizList.length*100) : null;
+  const wrongIds = {};
+  quizList.forEach(q => (q.wrong||[]).forEach(id => wrongIds[id]=(wrongIds[id]||0)+1));
+
+  // 按天汇总：所有出现过的天（newDone / reviewDone / quiz / daily）
+  const daySet = new Set();
+  Object.keys(st.newDone||{}).forEach(d=>daySet.add(d));
+  Object.keys(st.reviewDone||{}).forEach(d=>daySet.add(d));
+  quizList.forEach(q=>daySet.add(String(q.day)));
+  Object.keys(st.daily||{}).forEach(d=>{ if((st.daily[d]||{}).words) daySet.add(d); });
+  const days = Array.from(daySet).sort();
+
+  let html = `
+    <div class="kcards" style="margin-bottom:12px;">
+      <div class="kcard"><div class="k-lab">已学单词</div><div class="k-val">${st.learned.length}</div><div class="k-sub">/ ${TOTAL_WORDS} 词 · 掌握 ${Math.round(st.learned.length/TOTAL_WORDS*100)}%</div></div>
+      <div class="kcard hi"><div class="k-lab">闯关平均正确率</div><div class="k-val">${quizAvg==null?'—':quizAvg+'%'}</div><div class="k-sub">${quizList.length} 次闯关</div></div>
+      <div class="kcard"><div class="k-lab">连续打卡</div><div class="k-val">${streak(st)} 天</div><div class="k-sub">累计活跃 ${(st.actDates||[]).length} 天</div></div>
+      <div class="kcard"><div class="k-lab">累计积分</div><div class="k-val">${st.points}</div><div class="k-sub">学习 +10 / 词</div></div>
+    </div>`;
+
+  // 每日明细表
+  if (!days.length) {
+    html += '<div class="empty-tip">该学生还没有学习记录</div>';
+  } else {
+    html += '<div style="overflow-x:auto"><table class="tt"><thead><tr><th>日期/天</th><th>学新词</th><th>复习</th><th>闯关成绩</th><th>错词</th></tr></thead><tbody>';
+    days.forEach(dk => {
+      const dNum = Number(dk);
+      const newIds = (st.newDone||{})[dk] || [];
+      const revIds = (st.reviewDone||{})[dk] || [];
+      const q = quizList.filter(x => String(x.day)===dk).slice(-1)[0];
+      const dailyInfo = (st.daily||{})[dk];
+      const newTxt = newIds.length ? `${newIds.length} 词` : (dailyInfo&&dailyInfo.words?`${dailyInfo.words} 词`:'—');
+      const revTxt = revIds.length ? `${revIds.length} 词` : '—';
+      const qTxt = q ? `${q.correct}/${q.total}（${Math.round(q.correct/q.total*100)}%）` : '—';
+      const wIds = q ? (q.wrong||[]) : [];
+      const wTxt = wIds.length
+        ? wIds.map(id => WMAP[id] ? WMAP[id].word : id).join('、')
+        : (q ? '全对 🎉' : '—');
+      html += `<tr><td class="nm">第 ${dNum} 天<small>${fmtDayDate(st, dk)}</small></td>
+        <td>${newTxt}</td><td>${revTxt}</td><td>${qTxt}</td>
+        <td style="max-width:260px;font-size:12px;">${wTxt}</td></tr>`;
+    });
+    html += '</tbody></table></div>';
+  }
+
+  // 历史错词汇总
+  const wrongArr = Object.keys(wrongIds).sort((a,b)=>wrongIds[b]-wrongIds[a]);
+  if (wrongArr.length) {
+    html += `<div style="margin-top:12px;"><b style="font-size:13px;">❌ 历史错词（按出错次数）</b><div style="margin-top:6px;">` +
+      wrongArr.map(id => WMAP[id] ? `<span style="display:inline-block;background:#fef2f2;color:#dc2626;border-radius:10px;padding:3px 10px;font-size:12px;margin:2px;">${WMAP[id].word} ×${wrongIds[id]}</span>` : '').join('') +
+      '</div></div>';
+  }
+  box.innerHTML = html;
+}
+function fmtDayDate(st, dk) {
+  // 把学习天号转换为大致日期：created 日期 + (天-1)
+  try {
+    const base = new Date(st.created || Date.now());
+    base.setDate(base.getDate() + Number(dk) - 1);
+    return `${base.getMonth()+1}月${base.getDate()}日`;
+  } catch(e) { return ''; }
+}
+
 function renderTeacherNow() {
   loadDB();
   // 合并数据：服务端真实数据优先，本地模拟数据补充
@@ -1134,6 +1265,18 @@ function renderTeacherNow() {
   const t = today();
   const d = DB.simDay || 3;
   document.getElementById('t-date-sub').textContent = `今日：${t} · 班级进度：第 ${d} 天${DB.simDay ? '（模拟）' : ''} · 词库 ${TOTAL_WORDS} 词`;
+
+  // 缓存学生列表（背诵查询用）+ 填充下拉框
+  allStudentsCache = allStudents;
+  const sel = document.getElementById('rec-sel');
+  const prevSel = sel.value;
+  const rosterOrder = Object.keys(STUDENT_ROSTER);
+  const ordered = allStudents.slice().sort((a,b) => {
+    const ia = rosterOrder.indexOf(a.id), ib = rosterOrder.indexOf(b.id);
+    return (ia===-1?999:ia) - (ib===-1?999:ib);
+  });
+  sel.innerHTML = '<option value="">— 选择学生 —</option>' + ordered.map(st =>
+    `<option value="${st.id}" ${st.id===prevSel?'selected':''}>${st.name}（${st.id}）${st.simulated?' · 模拟':''}</option>`).join('');
 
   const activeToday = allStudents.filter(st => (st.daily[t] && st.daily[t].words > 0) || (st.actDates || []).includes(t));
   const doneToday = allStudents.filter(st => { const tk = studentTask(st); return tk.newDoneFlag && tk.reviewDoneFlag; });
